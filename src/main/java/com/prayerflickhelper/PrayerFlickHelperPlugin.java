@@ -1,4 +1,4 @@
-package com.example;
+package com.prayerflickhelper;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
@@ -11,43 +11,40 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.overlay.OverlayManager;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Example"
+	name = "Prayer Flick Helper"
 )
-public class ExamplePlugin extends Plugin
+public class PrayerFlickHelperPlugin extends Plugin
 {
 	@Inject
 	private Client client;
-
 	@Inject
-	private ExampleConfig config;
+	private PrayerFlickHelperConfig config;
+	@Inject
+	private PrayerFlickHelperOverlay prayerFlickHelperOverlay;
+	@Inject
+	private OverlayManager overlayManager;
 
 	@Override
 	protected void startUp() throws Exception
 	{
-		log.info("Example started!");
+		log.info("PrayerFlickHelper started");
+		overlayManager.add(prayerFlickHelperOverlay);
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
-		log.info("Example stopped!");
-	}
-
-	@Subscribe
-	public void onGameStateChanged(GameStateChanged gameStateChanged)
-	{
-		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
-		{
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Example says " + config.greeting(), null);
-		}
+		log.info("PrayerFlickHelper end");
+		overlayManager.remove(prayerFlickHelperOverlay);
 	}
 
 	@Provides
-	ExampleConfig provideConfig(ConfigManager configManager)
+	PrayerFlickHelperConfig provideConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(ExampleConfig.class);
+		return configManager.getConfig(PrayerFlickHelperConfig.class);
 	}
 }
